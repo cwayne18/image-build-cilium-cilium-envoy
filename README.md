@@ -4,7 +4,9 @@ This repo builds a hardened image for the Cilium `cilium-envoy` component that
 rke2 mirrors, from [github.com/cilium/proxy](https://github.com/cilium/proxy), packaged in a minimal
 SLE BCI (`registry.suse.com/bci/bci-base`) based image.
 
-See BLOCKER.md — this component cannot yet be source-built with the hardened pattern on standard CI.
+> **NOTE: This image is currently a MIRROR of the upstream image, not a from-source
+> hardened build.** See [MIRROR.md](./MIRROR.md) for details and [BLOCKER.md](./BLOCKER.md)
+> for why a source build is not yet feasible on CI.
 
 Binaries are compiled against [`rancher/hardened-build-base`](https://github.com/rancher/image-build-base),
 which provides the latest supported Go toolchain (FIPS/BoringCrypto-enabled on amd64).
