@@ -16,6 +16,10 @@ permissions:
 env:
   SOURCE_IMAGE: quay.io/cilium/cilium-envoy:v1.36.6-1778235340-b87d1e32f522b33bd51701c6476d199326f01496
   TARGET_IMAGE: ghcr.io/cwayne18/hardened-cilium-cilium-envoy:v1.36.6-1778235340-b87d1e32f522b33bd51701c6476d199326f01496
+  # Alias name explicitly requested by the maintainer. NOTE: the rke2-cilium PRIME
+  # chart resolves TARGET_IMAGE (hardened-cilium-cilium-envoy); this alias is an
+  # additional convenience tag of the same upstream manifest.
+  TARGET_IMAGE_ALIAS: ghcr.io/cwayne18/hardened-cilium-envoy:v1.36.6-1778235340-b87d1e32f522b33bd51701c6476d199326f01496
 
 jobs:
   mirror:
@@ -40,6 +44,8 @@ jobs:
         echo "Source: ${SOURCE_IMAGE}"
         echo "Target: ${TARGET_IMAGE}"
         docker buildx imagetools create --tag "${TARGET_IMAGE}" "${SOURCE_IMAGE}"
+        echo "Alias: ${TARGET_IMAGE_ALIAS}"
+        docker buildx imagetools create --tag "${TARGET_IMAGE_ALIAS}" "${SOURCE_IMAGE}"
 
     - name: Verify pushed manifest is multi-arch
       run: |
@@ -49,3 +55,8 @@ jobs:
         echo "${INSPECT}" | grep -q "linux/amd64" || { echo "missing amd64"; exit 1; }
         echo "${INSPECT}" | grep -q "linux/arm64" || { echo "missing arm64"; exit 1; }
         echo "pushing manifest for ${TARGET_IMAGE} confirmed multi-arch"
+        ALIAS_INSPECT="$(docker buildx imagetools inspect "${TARGET_IMAGE_ALIAS}")"
+        echo "${ALIAS_INSPECT}"
+        echo "${ALIAS_INSPECT}" | grep -q "linux/amd64" || { echo "alias missing amd64"; exit 1; }
+        echo "${ALIAS_INSPECT}" | grep -q "linux/arm64" || { echo "alias missing arm64"; exit 1; }
+        echo "pushing manifest for ${TARGET_IMAGE_ALIAS} confirmed multi-arch"
