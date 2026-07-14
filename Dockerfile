@@ -17,7 +17,7 @@
 # cache) later. It will NOT complete on a default GitHub runner.
 
 ARG BUILDER_BASE=quay.io/cilium/cilium-envoy-builder:6.1.0-latest
-ARG BCI_IMAGE=registry.suse.com/bci/bci-base:15.7
+ARG BCI_IMAGE=registry.suse.com/bci/bci-base:16.0
 
 FROM --platform=$BUILDPLATFORM ${BUILDER_BASE} AS builder
 WORKDIR /cilium/proxy
